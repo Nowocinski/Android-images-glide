@@ -23,7 +23,8 @@ public class PlanetsAdapter extends RecyclerView.Adapter<PlanetsViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull PlanetsViewHolder holder, int position) {
-
+        Planet planet = planets[position];
+        holder.setPlanet(planet);
     }
 
     @Override
