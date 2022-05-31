@@ -1,12 +1,33 @@
 package com.example.android_images_glide;
 
+import android.content.Context;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 public class Planet {
+    private final String LOG_KEY = "LOG_KEY@" + this.getClass().getSimpleName();
     private String position;
     private String name;
     private String imageURl;
+    private String imageLocal;
     private String velocity;
     private String distance;
     private String description;
+
+    public Planet(JSONObject jsonObject) throws JSONException {
+        this.position = jsonObject.getString("position");
+        this.name = jsonObject.getString("name");
+        this.imageURl = jsonObject.getString("image");
+        this.imageLocal = String.format("images/%s.jpg", name.toLowerCase());
+        this.velocity = jsonObject.getString("velocity");
+        this.distance = jsonObject.getString("distance");
+        this.description = jsonObject.getString("description");
+    }
 
     public String getPosition() {
         return position;
@@ -54,5 +75,33 @@ public class Planet {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public static String loadStringFromAssets(Context context, String fileName) throws IOException {
+        InputStream inputStream = context.getAssets().open(fileName);
+        int size = inputStream.available();
+        byte[] buffer = new byte[size];
+        inputStream.read(buffer);
+        inputStream.close();
+        return new String(buffer, "UTF-8");
+    }
+
+    public static Planet[] loadArrayFromJSON(Context context, String type) {
+        try {
+            String json = loadStringFromAssets(context, "planets.json");
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray jsonArray = jsonObject.getJSONArray(type);
+            Planet[] solarObjects = new Planet[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++) {
+                Planet solarObject = new Planet(jsonArray.getJSONObject(i));
+                solarObjects[i] = solarObject;
+            }
+            return solarObjects;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new Planet[0];
     }
 }
