@@ -77,6 +77,14 @@ public class Planet {
         this.description = description;
     }
 
+    public String getImageLocal() {
+        return imageLocal;
+    }
+
+    public void setImageLocal(String imageLocal) {
+        this.imageLocal = imageLocal;
+    }
+
     public static String loadStringFromAssets(Context context, String fileName) throws IOException {
         InputStream inputStream = context.getAssets().open(fileName);
         int size = inputStream.available();
